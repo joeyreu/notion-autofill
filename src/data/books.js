@@ -1,8 +1,10 @@
 const { Client } = require('@notionhq/client');
-const axios = require("axios");
+const { google } = require('googleapis');
 const QUERIES = require('../utils/queries');
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
+const gbooks = google.books({ version: 'v1' });
+
 
 const fetchBooks = async () => {
   const queryResponse = await notion.databases.query(QUERIES.BOOKS_TO_UPDATE);
@@ -12,18 +14,16 @@ const fetchBooks = async () => {
 const fetchBookMetadata = async (book) => {
   const query = book.properties.Title.title[0].plain_text;
 
-  const url = `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}`;
-  const response = await axios.get(url);
+  const response = await gbooks.volumes.list({ q: query });
   const result = response.data;
 
   if (!(result.totalItems > 0)) {
-    console.log("No metadata results found for book title: " + query);
+    console.log(`No metadata results found for book query [${query}]`);
     return;
   }
 
   const metadata = result.items[0];
-  console.log("metadata found for book title: " + query);
-
+  console.log(`metadata found for book query [${query}] with title [${metadata.volumeInfo.title}]`);
   return metadata;
 }
 

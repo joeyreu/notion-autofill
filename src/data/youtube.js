@@ -1,5 +1,4 @@
 const { Client } = require('@notionhq/client');
-const axios = require('axios');
 const { google } = require('googleapis');
 const QUERIES = require('../utils/queries');
 

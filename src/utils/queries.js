@@ -17,8 +17,8 @@ const QUERIES = {
         {
           property: "Title",
           rich_text: {
-            // contains: ";"
-            is_not_empty: true,
+            contains: ";"
+            // is_not_empty: true,
           }
         }
       ]
